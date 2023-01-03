@@ -1,8 +1,8 @@
 package com.ljy.authority.authority_test.model.repository;
 
+import com.ljy.authority.authority_test.model.domain.User;
+
 public interface UserRepository {
 
-    /*
-    * 유저의 권한을 받아오기 커스텀 시큐리티 필터로 리턴
-    */
+    User selectUserName(String username);
 }

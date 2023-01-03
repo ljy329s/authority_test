@@ -2,6 +2,7 @@ package com.ljy.authority.authority_test.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+@RestController
 public class CheckController {
     @GetMapping("/products")
     public String selectProduct(){
@@ -14,7 +15,7 @@ public class CheckController {
         return"<h1>등록</h1>";
     }
     
-    @PatchMapping("products")
+    @PatchMapping("/products")
     public String updateProduct(){
         System.out.println("수정");
         return "<h1>수정</h1>";
