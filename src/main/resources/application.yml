@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://14.63.226.76:9606/ljy_db
+    username: ljy_user
+    password: '!ljyUser329'
+
+  jwt:
+    header: Authorization
+    secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+    access-token-validity-in-seconds: 600
+
+  security:
+    user:
+      name: user
+      password: 1234
+
+server:
+  port: 9064
+  error:
+    whitelabel:
+      enabled: false
+
