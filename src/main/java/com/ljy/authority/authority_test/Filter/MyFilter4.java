@@ -19,6 +19,6 @@ public class MyFilter4 implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
             System.out.println("시큐리티");
-            chain.doFilter(request,response);
+            chain.doFilter(req,res);
     }
 }
