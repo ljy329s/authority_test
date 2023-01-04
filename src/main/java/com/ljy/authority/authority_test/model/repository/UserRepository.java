@@ -1,8 +1,16 @@
 package com.ljy.authority.authority_test.model.repository;
 
-import com.ljy.authority.authority_test.model.domain.User;
+import com.ljy.authority.authority_test.model.domain.Users;
+import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
+@Mapper
 public interface UserRepository {
 
-    User selectUserName(String username);
+    Users selectUser(String username);
+
+    void insertUser(Users user);
+
+    List<Users> selectAll();
 }

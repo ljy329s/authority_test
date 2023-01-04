@@ -23,8 +23,8 @@ public class MyFilter3 implements Filter {
 
         //테스트 위함 /다운캐스팅해서
         HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response; 
-        
+        HttpServletResponse res = (HttpServletResponse) response;
+
         //1차 요청메소드 파악 무조건 post일때 동작하는 메서드
         if(req.getMethod().equals("POST")){
             //메소드가 post이면 그때만동작

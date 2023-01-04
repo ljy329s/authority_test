@@ -2,7 +2,6 @@ package com.ljy.authority.authority_test.model.domain;
 
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
-import org.springframework.core.annotation.AliasFor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +9,8 @@ import java.util.List;
 
 
 @Data
-@Alias("user")
-public class User {
+@Alias("users")
+public class Users {
     private Long id;
     private String username;
     private String password;

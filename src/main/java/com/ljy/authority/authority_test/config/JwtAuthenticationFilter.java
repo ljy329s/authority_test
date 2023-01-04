@@ -1,31 +1,97 @@
 package com.ljy.authority.authority_test.config;
 
-import com.ljy.authority.authority_test.model.repository.UserRepository;
+import java.io.IOException;
+import java.util.Date;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.auth0.jwt.interfaces.Claim;
+import com.ljy.authority.authority_test.auth.PrincipalDetails;
+import com.ljy.authority.authority_test.config.JwtProperties;
+import com.ljy.authority.authority_test.model.domain.Login;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//우리가 formlogin을 안쓰기때문에 /login요청을 처리하는 필터를 만드는것
-//스프링시큐리티에서 UsernamePasswordAuthenticationFilter있음
-// /login요청해서 username, password 을 post로 전송하면
-// UsernamePasswordAuthenticationFilter 동작함
-//시큐리티에 addFilter 해서 넣어주기
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private UserRepository userRepository;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-   // private final AuthenticationManager authenticationManager;
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-        System.out.println("로그인시도");
-//1. username password 받아서
-        //2. 정상인지 로그인 시도 authenticationManager이걸로 로그인시도를 하면 PrincipalDetailsService가 호출
-        //그러면 loadByUsername()함수가 자동으로 실행됨
+import lombok.RequiredArgsConstructor;
 
-        //3.PrincipalDetails를 세션에 담고
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-        //qna q: 세션을 특정 서버의 메모리에 담게 되는 순간 jwt 쓰는 좋은 이유가 하나 사라지는게 아닌가?
-        // a: 세션에 담는이유 권한관리를 위해 아닙니다. 세션을 request와 response 되는 그 시점까지 잠시 임시로 권한처리를 위해 쓰는 거라
-        //세션 유지기간이 길지 않고, 세션을 공유할 필요도 없습니다.
+    private final AuthenticationManager authenticationManager;
 
-        //4.JWT토큰을 만들어서 응답해주면 된다.
+    // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
+    // 인증 요청시에 실행되는 함수 => /login
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
+
+        System.out.println("JwtAuthenticationFilter : 진입");
+
+        // request에 있는 username과 password를 파싱해서 자바 Object로 받기
+        ObjectMapper om = new ObjectMapper();
+        Login login = null;
+        try {
+            login = om.readValue(request.getInputStream(), Login.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("JwtAuthenticationFilter : "+login);
+
+        // 유저네임패스워드 토큰 생성
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        login.getUsername(),
+                        login.getPassword());
+
+        System.out.println("토큰 :"+authenticationToken );
+        System.out.println("JwtAuthenticationFilter : 토큰생성완료");
+
+
+        // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
+        // loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
+        // UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
+        // UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
+        // Authentication 객체를 만들어서 필터체인으로 리턴해준다.
+
+        // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
+        // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
+        // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
+        Authentication authentication =
+                authenticationManager.authenticate(authenticationToken);
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("Authentication : "+principalDetails.getUser().getUsername());
+        return authentication;
+    }
+
+    // JWT Token 생성해서 response에 담아주기
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+
+        PrincipalDetails principalDetailis = (PrincipalDetails) authResult.getPrincipal();
+
+         String jwtToken = JWT.create()
+                .withSubject(principalDetailis.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis()+(6000*10)))//10분 만료시간
+                .withClaim("id", principalDetailis.getUser().getId())//토큰에 담을내용
+                .withClaim("username", principalDetailis.getUser().getUsername())//토큰에 담을내용
+                .sign(Algorithm.HMAC512("hi"));//(Algorithm.HMAC512(JwtProperties.SECRET)//임의로 hi라고 적어줌 시크릿키로 바꿔주기
+
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
     }
 
 }

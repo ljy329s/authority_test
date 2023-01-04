@@ -1,28 +1,33 @@
 package com.ljy.authority.authority_test.auth;
 
-import com.ljy.authority.authority_test.model.domain.User;
+import com.ljy.authority.authority_test.model.domain.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class PrincipalDetail implements UserDetails {
+public class PrincipalDetails implements UserDetails {
 
-    private User user;
+    private Users user;
 
-    public PrincipalDetail(User user){
-        this.user=user;
+    public PrincipalDetails(Users user) {
+        this.user = user;
     }
-
+    public Users getUser() {
+        return user;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        user.getRoleList().forEach(r->{
-            authorities.add(()->r);
+        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        user.getRoleList().forEach(r -> {
+            authorities.add(() -> {
+                return r;
+            });
         });
         return authorities;
     }
+
 
     @Override
     public String getPassword() {

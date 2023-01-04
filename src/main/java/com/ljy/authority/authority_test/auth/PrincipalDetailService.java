@@ -1,6 +1,6 @@
 package com.ljy.authority.authority_test.auth;
 
-import com.ljy.authority.authority_test.model.domain.User;
+import com.ljy.authority.authority_test.model.domain.Users;
 import com.ljy.authority.authority_test.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,7 @@ public class PrincipalDetailService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.selectUserName(username);
-        return null;
+        Users user = userRepository.selectUser(username);
+        return new PrincipalDetails(user);
     }
 }

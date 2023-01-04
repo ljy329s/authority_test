@@ -24,7 +24,7 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/authority_test
+    url: jdbc:mariadb://localhost:3306/authority_test_db
     username: root
     password: '1234'
 
@@ -34,8 +34,8 @@ spring:
     access-token-validity-in-seconds: 600
 
   security:
-    filter:
-      order: 10
+#    filter:
+#      order: 10
     user:
       name: user
       password: 1234
