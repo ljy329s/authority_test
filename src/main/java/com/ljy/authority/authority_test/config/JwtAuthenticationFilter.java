@@ -15,7 +15,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
    // private final AuthenticationManager authenticationManager;
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         System.out.println("로그인시도");
-//1. username password 받아서
+        //1. username password 받아서
+        
         //2. 정상인지 로그인 시도 authenticationManager이걸로 로그인시도를 하면 PrincipalDetailsService가 호출
         //그러면 loadByUsername()함수가 자동으로 실행됨
 

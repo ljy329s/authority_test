@@ -3,7 +3,7 @@
 <mapper namespace="com.ljy.authority.authority_test.model.repository">
 <select id="selectUserName" resultType="user">
 select * from user
-where userName = #{username}
+where userId = 'user01'
 </select>
 
 </mapper>
