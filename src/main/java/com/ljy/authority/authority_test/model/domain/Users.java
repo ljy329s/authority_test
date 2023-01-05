@@ -1,6 +1,7 @@
 package com.ljy.authority.authority_test.model.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @Alias("users")
+@NoArgsConstructor
 public class Users {
     private Long id;
     private String username;

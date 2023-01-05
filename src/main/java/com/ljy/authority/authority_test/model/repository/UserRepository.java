@@ -10,7 +10,7 @@ public interface UserRepository {
 
     Users selectUser(String username);
 
-    void insertUser(Users user);
+    void insertUser(String username, String newPassword);
 
     List<Users> selectAll();
 }

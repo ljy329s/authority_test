@@ -20,9 +20,7 @@ public class UserController {
         System.out.println("x토큰");
         return "<h1>token</h1>";
     }
-    
-    //로그인
-    
+
     
     
 }

@@ -7,11 +7,7 @@ import com.ljy.authority.authority_test.model.domain.Users;
 import com.ljy.authority.authority_test.model.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,10 +53,10 @@ public class RestApiController {
     }
 
     @PostMapping("/join")
-    public String join(@RequestBody Users user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles("ROLE_USER");
-        userRepository.insertUser(user);
+    public String join(String username, String password) {
+        
+        String newPassword = (bCryptPasswordEncoder.encode(password));
+        userRepository.insertUser(username,newPassword);
         return "회원가입완료";
     }
 

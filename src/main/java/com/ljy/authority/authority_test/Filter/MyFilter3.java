@@ -15,7 +15,7 @@ import java.io.PrintWriter;
  */
 
 //@Component
-//@Order(-1) //FilterConfig에서 순서를 정하지 않고 어노테이션으로 순서 정할수있다 이땐 꼭 Component어노테이션도 적어줘야함
+//@Order(0) //FilterConfig에서 순서를 정하지 않고 어노테이션으로 순서 정할수있다 이땐 꼭 Component어노테이션도 적어줘야함
 public class MyFilter3 implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -44,7 +44,7 @@ public class MyFilter3 implements Filter {
         }
 
 
-        //chain.doFilter(req,res);//필터체인에 등록 만든필터에서 끝내지 않고 이어서 동작하기 위해 필터체인에 걸어줘야함
+     //chain.doFilter(request,response);//필터체인에 등록 만든필터에서 끝내지 않고 이어서 동작하기 위해 필터체인에 걸어줘야함
                                         //SecurityConfig에 http.addFilterAfter혹은 httpFilterBefor에 걸어야함
     }
 }

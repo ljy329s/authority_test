@@ -1,11 +1,15 @@
 package com.ljy.authority.authority_test.auth;
 
 import com.ljy.authority.authority_test.model.domain.Users;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+//시큐리티에서 사용자 정보를 가져올때 사용하는 UserDetails를 구현
 
 public class PrincipalDetails implements UserDetails {
 

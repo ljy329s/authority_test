@@ -24,8 +24,13 @@ public class CorsConfig {
         config.addAllowedOrigin("*");//모든 ip에 응답을 허용하겠다.
         config.addAllowedHeader("*");//모든 헤더를 응답을 허용
         config.addAllowedMethod("*");//모든 post,get,delte, patch등 메소드 다 허용
+        
         source.registerCorsConfiguration("/api/**",config);//소스에다가 등록 /api/** 로 들어오는 모든 주소는 이 컨피그 설정을 따라라
 
         return new CorsFilter(source);
     }
+    /**
+     * WebMvcConfigurer를 통해 cors설정을 하더라도 서블릿보다 앞단에 있는 필터에 해당 설정이 적용안됨.
+     * 따라서 SpringSecurity 를 사용할 경우 CorsFilter 를 통해 위 처럼 Cors 설정을 따로 해줘야함.
+     */
 }
