@@ -31,10 +31,6 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     
     private final AuthenticationConfiguration authenticationConfiguration;
-//    private final AccessDeniedHandler accessDeniedHandler;
-    
-  //  private final AuthenticationEntryPoint authenticationEntryPoint;
-
     //정적자원에 대해서는 Security 설정을 적용하지 않는다.
     
     /**
@@ -43,56 +39,43 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-
-
-        // http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);//뭐가 실행되기 전에 필터를 탈껀지 (FilterConfig에서 설정하기위해 주석)//SecurityContextPersistenceFilter.class Deplecate됐다. 다른방법..
-        return http
+        
+          return http
                     .csrf().disable()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//세션을 사용하지 않겠다
                     .and()
-//                    .formLogin().disable()//폼로그인을 사용하지 않겠다. jwt방식을 할거니까
-//            .formLogin()ßß
-//        .defaultSuccessUrl("/home")
-//            .and()
-            .httpBasic().disable()//기본적인 http방식을 안씀.일반적인 루트가 아닌 다른방식으로 요청시 거절, headerdp id , pw가 아닌 token을 달고 간다. 그래서 basic(id,비번을 들고 요청)이 아닌 bearer(토큰을 들고요청) 사용.
-                    //.addFilterBefore(exceptionHandlerFilter(), LogoutFilter.class)// 이 필터는 좀 더 구현에대해 많이 생각해봐야 할 것 같아서 일단 주석처리함
-                    .exceptionHandling()
-                    //.authenticationEntryPoint(authenticationEntryPoint)
+                    .formLogin().disable()//폼로그인을 사용하지 않겠다. jwt방식을 할거니까
+                    .httpBasic().disable()//기본적인 http방식을 안씀.일반적인 루트가 아닌 다른방식으로 요청시 거절, headerdp id , pw가 아닌 token을 달고 간다. 그래서 basic(id,비번을 들고 요청)이 아닌 bearer(토큰을 들고요청) 사용.
+                     .exceptionHandling()
                     .and()
                     .apply(new MyCustomDsl()) // 커스텀 필터 등록
-                    //.addFilter(corsFilter)//이렇게 등록하면 cors정책에서 피할수있다.CorsConfig에서 만든 필터 cross orgin요청이 와도 다 허용
-                    //.addFilter(new JwtAuthenticationFilter(authenticationManager))//이필터쓸때 꼭 넘겨야하는 파라미터 AuthenticationManger! 얘가 로그인을 진행하는 필터이기 때문
                     .and()
-                    .authorizeRequests(authorize -> authorize.antMatchers("/","/**").permitAll()
-                            . antMatchers("/api/vi/user/**")
+                    .authorizeRequests(authorize -> authorize.antMatchers("/home").permitAll()
+                            .antMatchers("/api/vi/user/**")
                             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                             .antMatchers("/api/v1/manager/**")
                             .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                             .antMatchers("/api/v1/admin/**")
-                            .access("hasRole('ROLE_ADMIN')")
-                            .anyRequest().permitAll())
+                            .access("hasRole('ROLE_ADMIN')"))
+                            
                 .build();
 
     }
-
-
+    
+    /**
+     * 커스텀필터
+     */
+    
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);//꼭 넘겨야하는 파라미터 AuthenticationManger! 얘가 로그인을 진행하는 필터이기 때문
             http
-                    .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
+                    .addFilter(corsConfig.corsFilter())// cors정책에서 피할수있다.CorsConfig에서 만든 필터 cross orgin요청이 와도 다 허용
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager))//인증처리
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));//인가처리
         }
     }
-    
-    
-//    @Bean
-//    ExceptionHandlerFilter exceptionHandlerFilter() {
-//        return new ExceptionHandlerFilter();
-//    }
     
     
     @Bean
@@ -134,8 +117,7 @@ public class SecurityConfig {
      *
      * filter 에서 터지는 거의 모든 exception 를 관리할 수 있도록 한것.
      */
-//상태코드 Unauthorized(401)는 이름에서 많이들 오해를 하지만 인가실패가 아닌 인증단계에서 에러가 있을때 주로 사용된다.
-//Forbidden(403)이 인가단계에서 실패하였을때 사용되는데 주로 사용자 권한의 scope와 요청에 필요한 권한이 일치하지 않을때 사용된다.
+
 /**
  * formLogin을 사용하지 않고 disabled 하는이유
  * form으로 로그인하면 javascript로 서버에 id , pw를 요청한다.

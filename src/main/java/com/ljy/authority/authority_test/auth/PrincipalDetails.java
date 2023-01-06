@@ -21,6 +21,8 @@ public class PrincipalDetails implements UserDetails {
     public Users getUser() {
         return user;
     }
+    
+    //다중으로 가지고 있는 권한을 꺼내올 수 있다.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();

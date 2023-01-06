@@ -19,6 +19,7 @@ public class AuthenticationFailureHandlerCustom implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.warn("Authentication Error: {}", exception.getMessage());
+        System.out.println("실패");
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
