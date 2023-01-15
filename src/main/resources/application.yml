@@ -28,10 +28,10 @@ spring:
     username: root
     password: '1234'
 
-#  jwt:
-#    header: Authorization
-#    secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
-#    access-token-validity-in-seconds: 600
+jwt:
+  response-header: Authorization
+  secret-key: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+  prefix: Bearer
 
 #  security:
 #    filter:

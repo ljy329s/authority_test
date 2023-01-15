@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
 import com.ljy.authority.authority_test.auth.PrincipalDetails;
-import com.ljy.authority.authority_test.config.JwtProperties;
+import com.ljy.authority.authority_test.model.common.JwtYml;
 import com.ljy.authority.authority_test.model.domain.Login;
 
-import org.springframework.context.annotation.Configuration;
+import com.ljy.authority.authority_test.model.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,13 +36,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
+    private final JwtYml jwtYml;
+
+
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-
-        System.out.println("JwtAuthenticationFilter : 진입");
 
         // request에 있는 username과 password를 파싱해서 자바 Object로 받기
         ObjectMapper om = new ObjectMapper();
@@ -61,8 +63,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         login.getPassword());
 
         System.out.println("토큰 :"+authenticationToken );
-        System.out.println("JwtAuthenticationFilter : 토큰생성완료");
-
 
         // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
         // loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
@@ -93,9 +93,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis()+(6000*10)))//10분 만료시간
                 .withClaim("id", principalDetailis.getUser().getId())//토큰에 담을내용
                 .withClaim("username", principalDetailis.getUser().getUsername())//토큰에 담을내용
-                .sign(Algorithm.HMAC512("hi"));//(Algorithm.HMAC512(JwtProperties.SECRET)//임의로 hi라고 적어줌 시크릿키로 바꿔주기
+                .sign(Algorithm.HMAC256(jwtYml.getSecretKey()));//(Algorithm.HMAC512(JwtProperties.SECRET)//임의로 hi라고 적어줌 시크릿키로 바꿔주기
+        System.out.println("jwtToken : "+jwtToken);
+        Cookie cookie = new Cookie("ljy",jwtToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
     }
 
 }

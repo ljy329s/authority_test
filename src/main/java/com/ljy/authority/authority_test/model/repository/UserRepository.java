@@ -10,7 +10,5 @@ public interface UserRepository {
 
     Users selectUser(String username);
 
-    void insertUser(Users user);
-
     List<Users> selectAll();
 }
