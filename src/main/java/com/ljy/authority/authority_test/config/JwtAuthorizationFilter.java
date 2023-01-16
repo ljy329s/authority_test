@@ -4,8 +4,10 @@ package com.ljy.authority.authority_test.config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.ljy.authority.authority_test.auth.PrincipalDetails;
+import com.ljy.authority.authority_test.model.common.JwtYml;
 import com.ljy.authority.authority_test.model.domain.Users;
 import com.ljy.authority.authority_test.model.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,15 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepository;
+    
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+    
+    @Value("${jwt.response-header}")
+    private String jwtHeader;
+    
+    @Value("${jwt.prefix}")
+    private String jwtTokenPrefix;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
@@ -31,18 +42,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String header = request.getHeader(JwtProperties.HEADER_STRING);
-        if(header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
+        
+        String header = request.getHeader(jwtHeader);
+        if(header == null || !header.startsWith(jwtTokenPrefix)) {
             chain.doFilter(request, response);
             return;
         }
         System.out.println("header : "+header);
-        String token = request.getHeader(JwtProperties.HEADER_STRING)
-                .replace(JwtProperties.TOKEN_PREFIX, "");
+        String token = request.getHeader(jwtHeader)
+                .replace(jwtTokenPrefix, "");
 
         // 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
         // 내가 SecurityContext에 직적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는 loadByUsername이 호출됨.
-        String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
+        String username = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token)
                 .getClaim("username").asString();
 
         if(username != null) {

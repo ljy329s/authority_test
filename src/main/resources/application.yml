@@ -1,53 +1,60 @@
-#spring:
-#  datasource:
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://14.63.226.76:9606/ljy_db
-#    username: ljy_user
-#    password: '!ljyUser329'
-#
-#  jwt:
-#    header: Authorization
-#    secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
-#    access-token-validity-in-seconds: 600
-#
-#  security:
-#    user:
-#      name: user
-#      password: 1234
-#
-#server:
-#  port: 9064
-#  error:
-#    whitelabel:
-#      enabled: false
-
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/authority_test_db
-    username: root
-    password: '1234'
+    url: jdbc:mariadb://14.63.226.76:9606/ljy_db
+    username: ljy_user
+    password: "!ljyUser329"
+
+  security:
+    user:
+      name: user
+      password: 1234
+
+mybatis:
+  type-aliases-package: com.ljy.authority.authority_test.model.domain
+  mapper-locations: mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
 
 jwt:
   response-header: Authorization
   secret-key: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
   prefix: Bearer
-
-#  security:
-#    filter:
-#      order: 10
-#    user:
-#      name: user
-#      password: 1234
-
-mybatis:
-  type-aliases-package: com.ljy.authority.authority_test.model.domain
-  mapper-locations: mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
+#  access-token-validity-in-seconds: 600
 
 server:
   port: 9064
   error:
     whitelabel:
       enabled: false
+
+#spring:
+#  datasource:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3306/authority_test_db
+#    username: root
+#    password: '1234'
+#
+##  jwt:
+##    header: Authorization
+##    secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+##    access-token-validity-in-seconds: 600
+#
+##  security:
+##    filter:
+##      order: 10
+##    user:
+##      name: user
+##      password: 1234
+#
+#mybatis:
+#  type-aliases-package: com.ljy.authority.authority_test.model.domain
+#  mapper-locations: mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#
+#server:
+#  port: 9064
+#  error:
+#    whitelabel:
+#      enabled: false

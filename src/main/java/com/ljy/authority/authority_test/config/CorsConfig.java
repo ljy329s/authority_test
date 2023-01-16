@@ -2,15 +2,11 @@ package com.ljy.authority.authority_test.config;
 
 import com.ljy.authority.authority_test.model.common.JwtYml;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 이렇게 작성만 하는건 의미가 없고 필터에 걸어줘야한다.
@@ -23,7 +19,7 @@ public class CorsConfig{
     private final JwtYml jwtYml;
 
     /**
-     * 스프링프레임워크가 가지고 있는 cors필터
+     * cors필터
      */
     @Bean
     public CorsFilter corsFilter(){

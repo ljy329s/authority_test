@@ -37,10 +37,6 @@ public class RestApiController {
     @GetMapping("/user")
     public String user(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("principal : "+principal.getUser().getId());
-        System.out.println("principal : "+principal.getUser().getUsername());
-        System.out.println("principal : "+principal.getUser().getPassword());
-
         return "<h1>user</h1>";
     }
 
@@ -48,12 +44,6 @@ public class RestApiController {
     @GetMapping("manager/reports")
     public String reports() {
         return "<h1>reports</h1>";
-    }
-
-    // 어드민이 접근 가능
-    @GetMapping("admin/users")
-    public List<Users> users(){
-        return userRepository.selectAll();
     }
 
 }
